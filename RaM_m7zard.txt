@@ -1,4 +1,4 @@
-olocal Players = game:GetService("Players")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -3898,6 +3898,28 @@ task.spawn(function()
 		avatar.Image = image
 	end
 end)
+local closeButton = new("TextButton", {
+	Position = UDim2.new(1, -80, 0, 8),
+	Size = UDim2.fromOffset(32, 32),
+	BackgroundColor3 = C.card,
+	BackgroundTransparency = 0.2,
+	AutoButtonColor = true,
+	Text = "",
+	Parent = topBar,
+})
+round(closeButton, 8)
+outline(closeButton, C.accent, 0.4)
+local closeIcon = new("Frame", {
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Position = UDim2.fromScale(0.5, 0.5),
+	Size = UDim2.fromOffset(14, 14),
+	BackgroundTransparency = 1,
+	Parent = closeButton,
+})
+drawIcon(closeIcon, "x", 12)(C.text)
+closeButton.MouseButton1Click:Connect(function()
+	closeMenu()
+end)
 local dragging, dragStart, startPos
 topBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1
@@ -5525,6 +5547,78 @@ do
 		pingItem.value.Text = string.format('<font color="%s">%d</font> %s',
 			speedColor(nil, pingMs, 80, 180, false), pingMs, subText("ms"))
 		timeItem.value.Text = os.date(WATERMARK.ShowSeconds and "%H:%M:%S" or "%H:%M")
+	end)
+end
+do
+	local smallGui = new("ScreenGui", {
+		Name = "RaMClient_SmallGui",
+		ResetOnSpawn = false,
+		DisplayOrder = 250,
+		Enabled = false,
+		Parent = playerGui,
+	})
+	
+	local smallBtn = new("TextButton", {
+		Name = "SmallGuiButton",
+		Position = UDim2.new(0, 20, 0.5, -25),
+		Size = UDim2.fromOffset(45, 45),
+		BackgroundColor3 = C.bgBottom,
+		BackgroundTransparency = 0.1,
+		AutoButtonColor = true,
+		Text = "",
+		Parent = smallGui,
+	})
+	round(smallBtn, 12)
+	outline(smallBtn, C.accent, 0.3)
+	new("UIGradient", {
+		Color = ColorSequence.new(C.bgTop, C.bgBottom),
+		Rotation = 45,
+		Parent = smallBtn,
+	})
+	local smallLogoHolder = new("Frame", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(26, 26),
+		BackgroundColor3 = LOGO_BG,
+		BorderSizePixel = 0,
+		Parent = smallBtn,
+	})
+	round(smallLogoHolder, 6)
+	outline(smallLogoHolder, C.line, 0.5)
+	drawLogoMark(smallLogoHolder, 26)
+
+	smallBtn.MouseButton1Click:Connect(function()
+		if menuOpen then
+			closeMenu()
+		else
+			openMenu()
+		end
+	end)
+	local draggingSmall, dragStartSmall, startPosSmall
+	smallBtn.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			draggingSmall = true
+			dragStartSmall = input.Position
+			startPosSmall = smallBtn.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					draggingSmall = false
+				end
+			end)
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if draggingSmall and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local deltaPos = input.Position - dragStartSmall
+			smallBtn.Position = UDim2.new(
+				startPosSmall.X.Scale, startPosSmall.X.Offset + deltaPos.X,
+				startPosSmall.Y.Scale, startPosSmall.Y.Offset + deltaPos.Y
+			)
+		end
+	end)
+
+	RunService.RenderStepped:Connect(function()
+		smallGui.Enabled = (WATERMARK.Enabled == false)
 	end)
 end
 local CURSOR, CURSOR_STYLES
