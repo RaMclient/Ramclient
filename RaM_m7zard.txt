@@ -349,8 +349,10 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
-local HAT = {
-	Enabled = false,
+local HAT, HAT_STYLES, TRAIL, TRAIL_STYLES, rainbowSequence
+do
+	HAT = {
+  Enabled = false,
 	Rainbow = false,
 	Color = Color3.fromRGB(255, 90, 90),
 	Radius = 1.4,
@@ -707,7 +709,7 @@ RENDERERS.Hat = function(owner, HAT)
 	end
 end
 RENDERERS.Hat(localPlayer, HAT)
-local TRAIL = {
+TRAIL = {
 	Enabled = false,
 	Rainbow = false,
 	Color = Color3.fromRGB(90, 170, 255),
@@ -719,7 +721,7 @@ local TRAIL = {
 	Style = "Ribbon",
 	FirstPersonDistance = 1.5,
 }
-local TRAIL_STYLES = { "Ribbon", "Wings", "Line", "Comet" }
+TRAIL_STYLES = { "Ribbon", "Wings", "Line", "Comet" }
 local TRAIL_STYLE_SETTINGS = {
 	["Ribbon"] = {
 		Horizontal = false,
@@ -789,7 +791,7 @@ local function buildTrail(character)
 		style = TRAIL.Style,
 	}
 end
-local function rainbowSequence(offset)
+function rainbowSequence(offset)
 	local keypoints = {}
 	for i = 0, 6 do
 		keypoints[#keypoints + 1] = ColorSequenceKeypoint.new(i / 6, Color3.fromHSV((offset + i / 6) % 1, 0.8, 1))
@@ -842,6 +844,7 @@ RunService.RenderStepped:Connect(function()
 	trail.LightInfluence = TRAIL.Glow and 0 or 1
 	trail.Brightness = TRAIL.Glow and math.max(TRAIL.GlowStrength, 0.1) or 1
 end)
+end
 local PARTICLES = {
 	Enabled = false,
 	Rainbow = false,
@@ -3756,11 +3759,13 @@ new("UIGradient", {
 	Rotation = 55,
 	Parent = windowBackground,
 })
-local topBar = new("Frame", {
-	Size = UDim2.new(1, 0, 0, 48),
-	BackgroundTransparency = 1,
-	Parent = frame,
-})
+local search, menuHint, openMenu, closeMenu
+do
+	local topBar = new("Frame", {
+		Size = UDim2.new(1, 0, 0, 48),
+		BackgroundTransparency = 1,
+		Parent = frame,
+	})
 new("Frame", {
 	Position = UDim2.new(0, 0, 1, -1),
 	Size = UDim2.new(1, 0, 0, 1),
@@ -3843,7 +3848,7 @@ local searchIcon = new("Frame", {
 	Parent = searchBox,
 })
 drawIcon(searchIcon, "search", 14)(C.sub)
-local search = new("TextBox", {
+search = new("TextBox", {
 	Position = UDim2.fromOffset(28, 0),
 	Size = UDim2.new(1, -36, 1, 0),
 	BackgroundTransparency = 1,
@@ -3978,7 +3983,7 @@ new("UIListLayout", {
 	SortOrder = Enum.SortOrder.LayoutOrder,
 	Parent = sidebarList,
 })
-local menuHint = new("TextLabel", {
+menuHint = new("TextLabel", {
 	Position = UDim2.new(0, 8, 1, -50),
 	Size = UDim2.new(1, -16, 0, 44),
 	BackgroundTransparency = 1,
@@ -3989,6 +3994,7 @@ local menuHint = new("TextLabel", {
 	Text = "RightControl — Menu\nRMB on card — Keybind\nmade by m7zard",
 	Parent = sidebar,
 })
+end
 local groups = {}
 local groupOrder = 0
 local function createGroup(name, iconKind)
@@ -9576,7 +9582,6 @@ do
 		decor.Position = frame.Position + UDim2.fromOffset(offset.X, offset.Y)
 	end)
 end
-local openMenu, closeMenu
 do
 	local SHARD_COLUMNS = 2
 	local SHARD_ROWS = 1
