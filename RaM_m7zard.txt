@@ -7678,7 +7678,25 @@ do
 	end
 end
 do
-	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local HttpService = game:GetService("HttpService")
+	local ROOT_FOLDER = "ramClient"
+	local CONFIG_FOLDER = ROOT_FOLDER .. "/configs"
+	local CONFIG_FILE = CONFIG_FOLDER .. "/configs.json"
+
+	local function ensureFolders()
+		pcall(function()
+			if makefolder then
+				if not isfolder or not isfolder(ROOT_FOLDER) then
+					makefolder(ROOT_FOLDER)
+				end
+				if not isfolder or not isfolder(CONFIG_FOLDER) then
+					makefolder(CONFIG_FOLDER)
+				end
+			end
+		end)
+	end
+	ensureFolders()
+
 	local CONFIG_TABLES = {
 		ESP = CONFIG,
 		Hat = HAT,
@@ -7707,6 +7725,7 @@ do
 	}
 	local MAX_CONFIGS = 20
 	local MAX_NAME_LENGTH = 30
+
 	local function serializeSettings()
 		local data = {}
 		for groupName, source in pairs(CONFIG_TABLES) do
@@ -7728,7 +7747,11 @@ do
 		end
 		return data
 	end
+
 	local function applySettings(data)
+		if type(data) ~= "table" then
+			return
+		end
 		if type(data.Binds) == "table" then
 			table.clear(KEYBINDS)
 			for name, key in pairs(data.Binds) do
@@ -7759,25 +7782,58 @@ do
 			refresh()
 		end
 	end
+
 	local savedConfigs = {}
 	local autoloadName = nil
-	local configRemote = ReplicatedStorage:WaitForChild("RaMVisualsConfigs", 3)
+
 	local function persistConfigs()
-		if not configRemote then
-			return
-		end
 		task.spawn(function()
-			local ok, result = pcall(function()
-				return configRemote:InvokeServer("set", { configs = savedConfigs, autoload = autoloadName })
+			local ok, err = pcall(function()
+				ensureFolders()
+				if writefile then
+					local json = HttpService:JSONEncode({
+						configs = savedConfigs,
+						autoload = autoloadName,
+					})
+					writefile(CONFIG_FILE, json)
+				end
 			end)
-			if not ok or result == false then
-				warn("RaM client: failed to save configs on server", result)
+			if not ok then
+				warn("RaM client: failed to save configs to file", err)
 			end
 		end)
 	end
+
+	local function loadConfigsFromFile()
+		local ok, result = pcall(function()
+			ensureFolders()
+			if isfile and readfile then
+				if not isfile(CONFIG_FILE) then
+					if writefile then
+						writefile(CONFIG_FILE, HttpService:JSONEncode({ configs = {}, autoload = nil }))
+					end
+					return { configs = {}, autoload = nil }
+				end
+				local raw = readfile(CONFIG_FILE)
+				if type(raw) == "string" and raw ~= "" then
+					return HttpService:JSONDecode(raw)
+				end
+			end
+			return nil
+		end)
+		if ok and type(result) == "table" then
+			savedConfigs = type(result.configs) == "table" and result.configs or {}
+			autoloadName = type(result.autoload) == "string" and result.autoload or nil
+		else
+			savedConfigs = {}
+			autoloadName = nil
+		end
+	end
+
 	local configSection = createSection("Config", "Settings")
 	local configCards = {}
 	local rebuildConfigCards
+
 	local createCard = new("Frame", {
 		LayoutOrder = 0,
 		BackgroundColor3 = C.card,
@@ -7787,6 +7843,7 @@ do
 	})
 	round(createCard, 8)
 	outline(createCard, C.accent, 0.55)
+
 	local createTitle = new("TextLabel", {
 		Position = UDim2.fromOffset(12, 6),
 		Size = UDim2.new(1, -24, 0, 20),
@@ -7798,6 +7855,7 @@ do
 		Text = "New Config",
 		Parent = createCard,
 	})
+
 	local nameBox = new("TextBox", {
 		Position = UDim2.fromOffset(12, 32),
 		Size = UDim2.new(1, -58, 0, 24),
@@ -7815,6 +7873,7 @@ do
 	})
 	round(nameBox, 6)
 	new("UIPadding", { PaddingLeft = UDim.new(0, 8), Parent = nameBox })
+
 	local saveButton = new("TextButton", {
 		Position = UDim2.new(1, -40, 0, 32),
 		Size = UDim2.fromOffset(28, 24),
@@ -7828,6 +7887,7 @@ do
 		Parent = createCard,
 	})
 	round(saveButton, 6)
+
 	local flashId = 0
 	local function flashTitle(text, color)
 		flashId += 1
@@ -7841,6 +7901,7 @@ do
 			end
 		end)
 	end
+
 	local function countConfigs()
 		local count = 0
 		for _ in pairs(savedConfigs) do
@@ -7848,6 +7909,7 @@ do
 		end
 		return count
 	end
+
 	local function saveNewConfig()
 		local name = nameBox.Text:gsub("^%s+", ""):gsub("%s+$", "")
 		if name == "" then
@@ -7870,12 +7932,14 @@ do
 		playToggleSound(true)
 		flashTitle(existed and "Overwritten" or "Saved")
 	end
+
 	saveButton.MouseButton1Click:Connect(saveNewConfig)
 	nameBox.FocusLost:Connect(function(enterPressed)
 		if enterPressed then
 			saveNewConfig()
 		end
 	end)
+
 	local function removeConfigCardsFromSearch()
 		for index = #configSection.cards, 1, -1 do
 			if configSection.cards[index].isConfig then
@@ -7883,6 +7947,7 @@ do
 			end
 		end
 	end
+
 	rebuildConfigCards = function()
 		if currentModule and currentModule.isConfig then
 			showGrid()
@@ -8014,18 +8079,9 @@ do
 			table.insert(configSection.cards, { frame = card, name = name, desc = descText, isConfig = true })
 		end
 	end
+
 	task.spawn(function()
-		if configRemote then
-			local ok, result = pcall(function()
-				return configRemote:InvokeServer("get")
-			end)
-			if ok and type(result) == "table" then
-				savedConfigs = type(result.configs) == "table" and result.configs or {}
-				autoloadName = result.autoload
-			else
-				warn("RaM client: failed to load configs from server", result)
-			end
-		end
+		loadConfigsFromFile()
 		rebuildConfigCards()
 		if autoloadName and savedConfigs[autoloadName] then
 			applySettings(savedConfigs[autoloadName].data)
