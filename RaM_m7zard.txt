@@ -8183,320 +8183,330 @@ do
 	end)
 end
 local updateMenuBlur
-do
-	local THEMES = {
-		["Burgundy"] = {
-			bgTop = Color3.fromRGB(92, 32, 44), bgBottom = Color3.fromRGB(38, 14, 20),
-			panel = Color3.fromRGB(30, 11, 16), card = Color3.fromRGB(80, 30, 40),
-			cardHover = Color3.fromRGB(98, 38, 50), inner = Color3.fromRGB(52, 19, 27),
-			accent = Color3.fromRGB(250, 90, 106), accentDim = Color3.fromRGB(140, 56, 70),
-			off = Color3.fromRGB(104, 76, 82), sub = Color3.fromRGB(226, 204, 209),
-			line = Color3.fromRGB(160, 88, 100),
-		},
-		["Midnight"] = {
-			bgTop = Color3.fromRGB(36, 50, 104), bgBottom = Color3.fromRGB(14, 18, 42),
-			panel = Color3.fromRGB(12, 16, 36), card = Color3.fromRGB(38, 50, 100),
-			cardHover = Color3.fromRGB(48, 62, 120), inner = Color3.fromRGB(22, 28, 58),
-			accent = Color3.fromRGB(118, 162, 255), accentDim = Color3.fromRGB(62, 86, 160),
-			off = Color3.fromRGB(74, 82, 112), sub = Color3.fromRGB(206, 214, 240),
-			line = Color3.fromRGB(88, 110, 184),
-		},
-		["Amethyst"] = {
-			bgTop = Color3.fromRGB(80, 38, 116), bgBottom = Color3.fromRGB(30, 15, 46),
-			panel = Color3.fromRGB(24, 12, 38), card = Color3.fromRGB(72, 36, 104),
-			cardHover = Color3.fromRGB(88, 46, 126), inner = Color3.fromRGB(44, 22, 66),
-			accent = Color3.fromRGB(198, 134, 255), accentDim = Color3.fromRGB(110, 70, 160),
-			off = Color3.fromRGB(96, 78, 114), sub = Color3.fromRGB(222, 206, 240),
-			line = Color3.fromRGB(134, 92, 186),
-		},
-		["Emerald"] = {
-			bgTop = Color3.fromRGB(26, 88, 72), bgBottom = Color3.fromRGB(10, 32, 27),
-			panel = Color3.fromRGB(9, 26, 22), card = Color3.fromRGB(30, 78, 65),
-			cardHover = Color3.fromRGB(38, 96, 80), inner = Color3.fromRGB(17, 46, 38),
-			accent = Color3.fromRGB(88, 232, 170), accentDim = Color3.fromRGB(44, 128, 96),
-			off = Color3.fromRGB(72, 98, 90), sub = Color3.fromRGB(204, 234, 222),
-			line = Color3.fromRGB(70, 142, 116),
-		},
-		["Graphite"] = {
-			bgTop = Color3.fromRGB(66, 66, 74), bgBottom = Color3.fromRGB(26, 26, 30),
-			panel = Color3.fromRGB(20, 20, 24), card = Color3.fromRGB(58, 58, 66),
-			cardHover = Color3.fromRGB(72, 72, 82), inner = Color3.fromRGB(36, 36, 42),
-			accent = Color3.fromRGB(255, 176, 90), accentDim = Color3.fromRGB(130, 96, 64),
-			off = Color3.fromRGB(90, 90, 98), sub = Color3.fromRGB(220, 220, 226),
-			line = Color3.fromRGB(118, 118, 130),
-		},
-		["Neon"] = {
-			bgTop = Color3.fromRGB(40, 22, 78), bgBottom = Color3.fromRGB(17, 9, 33),
-			panel = Color3.fromRGB(13, 7, 26), card = Color3.fromRGB(35, 19, 68),
-			cardHover = Color3.fromRGB(43, 24, 84), inner = Color3.fromRGB(23, 13, 44),
-			accent = Color3.fromRGB(255, 70, 200), accentDim = Color3.fromRGB(118, 37, 111),
-			off = Color3.fromRGB(83, 76, 102), sub = Color3.fromRGB(238, 216, 235),
-			line = Color3.fromRGB(144, 46, 140),
-		},
-		["Ocean"] = {
-			bgTop = Color3.fromRGB(18, 64, 92), bgBottom = Color3.fromRGB(8, 27, 39),
-			panel = Color3.fromRGB(6, 21, 30), card = Color3.fromRGB(16, 56, 80),
-			cardHover = Color3.fromRGB(19, 69, 99), inner = Color3.fromRGB(10, 36, 52),
-			accent = Color3.fromRGB(60, 205, 255), accentDim = Color3.fromRGB(31, 107, 139),
-			off = Color3.fromRGB(74, 93, 108), sub = Color3.fromRGB(215, 232, 242),
-			line = Color3.fromRGB(39, 133, 173),
-		},
-		["Sunset"] = {
-			bgTop = Color3.fromRGB(96, 44, 36), bgBottom = Color3.fromRGB(40, 18, 15),
-			panel = Color3.fromRGB(32, 15, 12), card = Color3.fromRGB(84, 38, 31),
-			cardHover = Color3.fromRGB(104, 48, 39), inner = Color3.fromRGB(55, 25, 21),
-			accent = Color3.fromRGB(255, 140, 70), accentDim = Color3.fromRGB(141, 74, 42),
-			off = Color3.fromRGB(106, 85, 85), sub = Color3.fromRGB(238, 224, 220),
-			line = Color3.fromRGB(176, 91, 54),
-		},
-		["Sakura"] = {
-			bgTop = Color3.fromRGB(92, 46, 72), bgBottom = Color3.fromRGB(39, 19, 30),
-			panel = Color3.fromRGB(30, 15, 24), card = Color3.fromRGB(80, 40, 63),
-			cardHover = Color3.fromRGB(99, 50, 78), inner = Color3.fromRGB(52, 26, 41),
-			accent = Color3.fromRGB(255, 150, 200), accentDim = Color3.fromRGB(139, 78, 109),
-			off = Color3.fromRGB(104, 86, 100), sub = Color3.fromRGB(238, 226, 235),
-			line = Color3.fromRGB(173, 98, 136),
-		},
-		["Lava"] = {
-			bgTop = Color3.fromRGB(70, 22, 12), bgBottom = Color3.fromRGB(29, 9, 5),
-			panel = Color3.fromRGB(23, 7, 4), card = Color3.fromRGB(61, 19, 10),
-			cardHover = Color3.fromRGB(76, 24, 13), inner = Color3.fromRGB(40, 13, 7),
-			accent = Color3.fromRGB(255, 96, 30), accentDim = Color3.fromRGB(130, 47, 17),
-			off = Color3.fromRGB(95, 76, 76), sub = Color3.fromRGB(238, 219, 215),
-			line = Color3.fromRGB(161, 58, 21),
-		},
-		["Ice"] = {
-			bgTop = Color3.fromRGB(44, 70, 92), bgBottom = Color3.fromRGB(18, 29, 39),
-			panel = Color3.fromRGB(15, 23, 30), card = Color3.fromRGB(38, 61, 80),
-			cardHover = Color3.fromRGB(48, 76, 99), inner = Color3.fromRGB(25, 40, 52),
-			accent = Color3.fromRGB(160, 225, 255), accentDim = Color3.fromRGB(82, 118, 139),
-			off = Color3.fromRGB(85, 95, 108), sub = Color3.fromRGB(227, 235, 242),
-			line = Color3.fromRGB(101, 147, 173),
-		},
-		["Toxic"] = {
-			bgTop = Color3.fromRGB(26, 46, 20), bgBottom = Color3.fromRGB(11, 19, 8),
-			panel = Color3.fromRGB(9, 15, 7), card = Color3.fromRGB(23, 40, 17),
-			cardHover = Color3.fromRGB(28, 50, 22), inner = Color3.fromRGB(15, 26, 11),
-			accent = Color3.fromRGB(150, 255, 60), accentDim = Color3.fromRGB(70, 120, 32),
-			off = Color3.fromRGB(78, 86, 79), sub = Color3.fromRGB(226, 238, 218),
-			line = Color3.fromRGB(86, 147, 40),
-		},
-		["Gold"] = {
-			bgTop = Color3.fromRGB(58, 46, 22), bgBottom = Color3.fromRGB(24, 19, 9),
-			panel = Color3.fromRGB(19, 15, 7), card = Color3.fromRGB(50, 40, 19),
-			cardHover = Color3.fromRGB(63, 50, 24), inner = Color3.fromRGB(33, 26, 13),
-			accent = Color3.fromRGB(245, 196, 72), accentDim = Color3.fromRGB(122, 97, 38),
-			off = Color3.fromRGB(90, 86, 80), sub = Color3.fromRGB(237, 231, 220),
-			line = Color3.fromRGB(149, 120, 46),
-		},
-		["Lavender"] = {
-			bgTop = Color3.fromRGB(66, 54, 100), bgBottom = Color3.fromRGB(28, 23, 42),
-			panel = Color3.fromRGB(22, 18, 33), card = Color3.fromRGB(57, 47, 87),
-			cardHover = Color3.fromRGB(71, 58, 108), inner = Color3.fromRGB(38, 31, 57),
-			accent = Color3.fromRGB(190, 160, 255), accentDim = Color3.fromRGB(102, 86, 142),
-			off = Color3.fromRGB(94, 89, 111), sub = Color3.fromRGB(230, 227, 242),
-			line = Color3.fromRGB(128, 107, 178),
-		},
-		["Mint"] = {
-			bgTop = Color3.fromRGB(24, 74, 66), bgBottom = Color3.fromRGB(10, 31, 28),
-			panel = Color3.fromRGB(8, 24, 22), card = Color3.fromRGB(21, 64, 57),
-			cardHover = Color3.fromRGB(26, 80, 71), inner = Color3.fromRGB(14, 42, 38),
-			accent = Color3.fromRGB(110, 240, 200), accentDim = Color3.fromRGB(54, 126, 106),
-			off = Color3.fromRGB(77, 97, 97), sub = Color3.fromRGB(221, 236, 235),
-			line = Color3.fromRGB(66, 156, 132),
-		},
-		["Blood"] = {
-			bgTop = Color3.fromRGB(60, 8, 12), bgBottom = Color3.fromRGB(25, 3, 5),
-			panel = Color3.fromRGB(20, 3, 4), card = Color3.fromRGB(52, 7, 10),
-			cardHover = Color3.fromRGB(65, 9, 13), inner = Color3.fromRGB(34, 5, 7),
-			accent = Color3.fromRGB(225, 30, 45), accentDim = Color3.fromRGB(114, 15, 22),
-			off = Color3.fromRGB(91, 70, 76), sub = Color3.fromRGB(235, 211, 217),
-			line = Color3.fromRGB(141, 19, 28),
-		},
-		["Coffee"] = {
-			bgTop = Color3.fromRGB(70, 48, 36), bgBottom = Color3.fromRGB(29, 20, 15),
-			panel = Color3.fromRGB(23, 16, 12), card = Color3.fromRGB(61, 42, 31),
-			cardHover = Color3.fromRGB(76, 52, 39), inner = Color3.fromRGB(40, 27, 21),
-			accent = Color3.fromRGB(225, 170, 120), accentDim = Color3.fromRGB(118, 87, 62),
-			off = Color3.fromRGB(95, 86, 85), sub = Color3.fromRGB(235, 228, 226),
-			line = Color3.fromRGB(147, 108, 78),
-		},
-	}
-	THEMES["Transparent"] = {
-		bgTop = Color3.fromRGB(175, 175, 180), bgBottom = Color3.fromRGB(125, 125, 130),
-		panel = Color3.fromRGB(95, 95, 100), card = Color3.fromRGB(155, 155, 160),
-		cardHover = Color3.fromRGB(180, 180, 186), inner = Color3.fromRGB(115, 115, 120),
-		accent = Color3.fromRGB(190, 190, 197), accentDim = Color3.fromRGB(120, 120, 126),
-		off = Color3.fromRGB(78, 78, 84), sub = Color3.fromRGB(232, 232, 236),
-		line = Color3.fromRGB(236, 236, 240),
-	}
-	local THEME_ORDER = { "Transparent", "Burgundy", "Midnight", "Amethyst", "Emerald", "Graphite", "Neon", "Ocean", "Sunset", "Sakura", "Lava", "Ice", "Toxic", "Gold", "Lavender", "Mint", "Blood", "Coffee" }
-	local THEME_KEYS = { "bgTop", "bgBottom", "panel", "card", "cardHover", "inner", "accent", "accentDim", "off", "sub", "line" }
-	local appliedTheme = "Burgundy"
-	local themeCards = {}
-	local function colorKey(color)
-		return string.format("%d,%d,%d",
-			math.floor(color.R * 255 + 0.5), math.floor(color.G * 255 + 0.5), math.floor(color.B * 255 + 0.5))
-	end
-	local function recolor(root, map)
-		for _, obj in ipairs(root:GetDescendants()) do
-			if obj:IsA("GuiObject") and obj:GetAttribute("KeepColor") then
-				continue
-			end
-			if obj:IsA("GuiObject") then
-				local background = map[colorKey(obj.BackgroundColor3)]
-				if background then
-					obj.BackgroundColor3 = background
-				end
-				if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-					local textColor = map[colorKey(obj.TextColor3)]
-					if textColor then
-						obj.TextColor3 = textColor
-					end
-					if obj:IsA("TextBox") then
-						local placeholder = map[colorKey(obj.PlaceholderColor3)]
-						if placeholder then
-							obj.PlaceholderColor3 = placeholder
-						end
-					end
-				end
-				if obj:IsA("ScrollingFrame") then
-					local bar = map[colorKey(obj.ScrollBarImageColor3)]
-					if bar then
-						obj.ScrollBarImageColor3 = bar
-					end
-				end
-			elseif obj:IsA("UIStroke") then
-				local strokeColor = map[colorKey(obj.Color)]
-				if strokeColor then
-					obj.Color = strokeColor
-				end
-			elseif obj:IsA("UIGradient") then
-				local changed, keypoints = false, {}
-				for _, keypoint in ipairs(obj.Color.Keypoints) do
-					local mapped = map[colorKey(keypoint.Value)]
-					changed = changed or mapped ~= nil
-					table.insert(keypoints, ColorSequenceKeypoint.new(keypoint.Time, mapped or keypoint.Value))
-				end
-				if changed then
-					obj.Color = ColorSequence.new(keypoints)
-				end
-			end
-		end
-	end
-	local function refreshThemeCards()
-		for name, entry in pairs(themeCards) do
-			local active = name == appliedTheme
-			entry.stroke.Color = active and C.accent or C.line
-			entry.stroke.Transparency = active and 0.2 or 0.65
-			entry.badge.Visible = active
-			entry.badge.TextColor3 = C.accent
-		end
-	end
-	local CLEAR_THEME = "Transparent"
-	local clearLevels = nil
-	local clearConnection = nil
-	local function clearObject(obj)
-		if obj:GetAttribute("KeepColor") then
-			return
+
+local THEMES = {
+	["Burgundy"] = {
+		bgTop = Color3.fromRGB(92, 32, 44), bgBottom = Color3.fromRGB(38, 14, 20),
+		panel = Color3.fromRGB(30, 11, 16), card = Color3.fromRGB(80, 30, 40),
+		cardHover = Color3.fromRGB(98, 38, 50), inner = Color3.fromRGB(52, 19, 27),
+		accent = Color3.fromRGB(250, 90, 106), accentDim = Color3.fromRGB(140, 56, 70),
+		off = Color3.fromRGB(104, 76, 82), sub = Color3.fromRGB(226, 204, 209),
+		line = Color3.fromRGB(160, 88, 100),
+	},
+	["Midnight"] = {
+		bgTop = Color3.fromRGB(36, 50, 104), bgBottom = Color3.fromRGB(14, 18, 42),
+		panel = Color3.fromRGB(12, 16, 36), card = Color3.fromRGB(38, 50, 100),
+		cardHover = Color3.fromRGB(48, 62, 120), inner = Color3.fromRGB(22, 28, 58),
+		accent = Color3.fromRGB(118, 162, 255), accentDim = Color3.fromRGB(62, 86, 160),
+		off = Color3.fromRGB(74, 82, 112), sub = Color3.fromRGB(206, 214, 240),
+		line = Color3.fromRGB(88, 110, 184),
+	},
+	["Amethyst"] = {
+		bgTop = Color3.fromRGB(80, 38, 116), bgBottom = Color3.fromRGB(30, 15, 46),
+		panel = Color3.fromRGB(24, 12, 38), card = Color3.fromRGB(72, 36, 104),
+		cardHover = Color3.fromRGB(88, 46, 126), inner = Color3.fromRGB(44, 22, 66),
+		accent = Color3.fromRGB(198, 134, 255), accentDim = Color3.fromRGB(110, 70, 160),
+		off = Color3.fromRGB(96, 78, 114), sub = Color3.fromRGB(222, 206, 240),
+		line = Color3.fromRGB(134, 92, 186),
+	},
+	["Emerald"] = {
+		bgTop = Color3.fromRGB(26, 88, 72), bgBottom = Color3.fromRGB(10, 32, 27),
+		panel = Color3.fromRGB(9, 26, 22), card = Color3.fromRGB(30, 78, 65),
+		cardHover = Color3.fromRGB(38, 96, 80), inner = Color3.fromRGB(17, 46, 38),
+		accent = Color3.fromRGB(88, 232, 170), accentDim = Color3.fromRGB(44, 128, 96),
+		off = Color3.fromRGB(72, 98, 90), sub = Color3.fromRGB(204, 234, 222),
+		line = Color3.fromRGB(70, 142, 116),
+	},
+	["Graphite"] = {
+		bgTop = Color3.fromRGB(66, 66, 74), bgBottom = Color3.fromRGB(26, 26, 30),
+		panel = Color3.fromRGB(20, 20, 24), card = Color3.fromRGB(58, 58, 66),
+		cardHover = Color3.fromRGB(72, 72, 82), inner = Color3.fromRGB(36, 36, 42),
+		accent = Color3.fromRGB(255, 176, 90), accentDim = Color3.fromRGB(130, 96, 64),
+		off = Color3.fromRGB(90, 90, 98), sub = Color3.fromRGB(220, 220, 226),
+		line = Color3.fromRGB(118, 118, 130),
+	},
+	["Neon"] = {
+		bgTop = Color3.fromRGB(40, 22, 78), bgBottom = Color3.fromRGB(17, 9, 33),
+		panel = Color3.fromRGB(13, 7, 26), card = Color3.fromRGB(35, 19, 68),
+		cardHover = Color3.fromRGB(43, 24, 84), inner = Color3.fromRGB(23, 13, 44),
+		accent = Color3.fromRGB(255, 70, 200), accentDim = Color3.fromRGB(118, 37, 111),
+		off = Color3.fromRGB(83, 76, 102), sub = Color3.fromRGB(238, 216, 235),
+		line = Color3.fromRGB(144, 46, 140),
+	},
+	["Ocean"] = {
+		bgTop = Color3.fromRGB(18, 64, 92), bgBottom = Color3.fromRGB(8, 27, 39),
+		panel = Color3.fromRGB(6, 21, 30), card = Color3.fromRGB(16, 56, 80),
+		cardHover = Color3.fromRGB(19, 69, 99), inner = Color3.fromRGB(10, 36, 52),
+		accent = Color3.fromRGB(60, 205, 255), accentDim = Color3.fromRGB(31, 107, 139),
+		off = Color3.fromRGB(74, 93, 108), sub = Color3.fromRGB(215, 232, 242),
+		line = Color3.fromRGB(39, 133, 173),
+	},
+	["Sunset"] = {
+		bgTop = Color3.fromRGB(96, 44, 36), bgBottom = Color3.fromRGB(40, 18, 15),
+		panel = Color3.fromRGB(32, 15, 12), card = Color3.fromRGB(84, 38, 31),
+		cardHover = Color3.fromRGB(104, 48, 39), inner = Color3.fromRGB(55, 25, 21),
+		accent = Color3.fromRGB(255, 140, 70), accentDim = Color3.fromRGB(141, 74, 42),
+		off = Color3.fromRGB(106, 85, 85), sub = Color3.fromRGB(238, 224, 220),
+		line = Color3.fromRGB(176, 91, 54),
+	},
+	["Sakura"] = {
+		bgTop = Color3.fromRGB(92, 46, 72), bgBottom = Color3.fromRGB(39, 19, 30),
+		panel = Color3.fromRGB(30, 15, 24), card = Color3.fromRGB(80, 40, 63),
+		cardHover = Color3.fromRGB(99, 50, 78), inner = Color3.fromRGB(52, 26, 41),
+		accent = Color3.fromRGB(255, 150, 200), accentDim = Color3.fromRGB(139, 78, 109),
+		off = Color3.fromRGB(104, 86, 100), sub = Color3.fromRGB(238, 226, 235),
+		line = Color3.fromRGB(173, 98, 136),
+	},
+	["Lava"] = {
+		bgTop = Color3.fromRGB(70, 22, 12), bgBottom = Color3.fromRGB(29, 9, 5),
+		panel = Color3.fromRGB(23, 7, 4), card = Color3.fromRGB(61, 19, 10),
+		cardHover = Color3.fromRGB(76, 24, 13), inner = Color3.fromRGB(40, 13, 7),
+		accent = Color3.fromRGB(255, 96, 30), accentDim = Color3.fromRGB(130, 47, 17),
+		off = Color3.fromRGB(95, 76, 76), sub = Color3.fromRGB(238, 219, 215),
+		line = Color3.fromRGB(161, 58, 21),
+	},
+	["Ice"] = {
+		bgTop = Color3.fromRGB(44, 70, 92), bgBottom = Color3.fromRGB(18, 29, 39),
+		panel = Color3.fromRGB(15, 23, 30), card = Color3.fromRGB(38, 61, 80),
+		cardHover = Color3.fromRGB(48, 76, 99), inner = Color3.fromRGB(25, 40, 52),
+		accent = Color3.fromRGB(160, 225, 255), accentDim = Color3.fromRGB(82, 118, 139),
+		off = Color3.fromRGB(85, 95, 108), sub = Color3.fromRGB(227, 235, 242),
+		line = Color3.fromRGB(101, 147, 173),
+	},
+	["Toxic"] = {
+		bgTop = Color3.fromRGB(26, 46, 20), bgBottom = Color3.fromRGB(11, 19, 8),
+		panel = Color3.fromRGB(9, 15, 7), card = Color3.fromRGB(23, 40, 17),
+		cardHover = Color3.fromRGB(28, 50, 22), inner = Color3.fromRGB(15, 26, 11),
+		accent = Color3.fromRGB(150, 255, 60), accentDim = Color3.fromRGB(70, 120, 32),
+		off = Color3.fromRGB(78, 86, 79), sub = Color3.fromRGB(226, 238, 218),
+		line = Color3.fromRGB(86, 147, 40),
+	},
+	["Gold"] = {
+		bgTop = Color3.fromRGB(58, 46, 22), bgBottom = Color3.fromRGB(24, 19, 9),
+		panel = Color3.fromRGB(19, 15, 7), card = Color3.fromRGB(50, 40, 19),
+		cardHover = Color3.fromRGB(63, 50, 24), inner = Color3.fromRGB(33, 26, 13),
+		accent = Color3.fromRGB(245, 196, 72), accentDim = Color3.fromRGB(122, 97, 38),
+		off = Color3.fromRGB(90, 86, 80), sub = Color3.fromRGB(237, 231, 220),
+		line = Color3.fromRGB(149, 120, 46),
+	},
+	["Lavender"] = {
+		bgTop = Color3.fromRGB(66, 54, 100), bgBottom = Color3.fromRGB(28, 23, 42),
+		panel = Color3.fromRGB(22, 18, 33), card = Color3.fromRGB(57, 47, 87),
+		cardHover = Color3.fromRGB(71, 58, 108), inner = Color3.fromRGB(38, 31, 57),
+		accent = Color3.fromRGB(190, 160, 255), accentDim = Color3.fromRGB(102, 86, 142),
+		off = Color3.fromRGB(94, 89, 111), sub = Color3.fromRGB(230, 227, 242),
+		line = Color3.fromRGB(128, 107, 178),
+	},
+	["Mint"] = {
+		bgTop = Color3.fromRGB(24, 74, 66), bgBottom = Color3.fromRGB(10, 31, 28),
+		panel = Color3.fromRGB(8, 24, 22), card = Color3.fromRGB(21, 64, 57),
+		cardHover = Color3.fromRGB(26, 80, 71), inner = Color3.fromRGB(14, 42, 38),
+		accent = Color3.fromRGB(110, 240, 200), accentDim = Color3.fromRGB(54, 126, 106),
+		off = Color3.fromRGB(77, 97, 97), sub = Color3.fromRGB(221, 236, 235),
+		line = Color3.fromRGB(66, 156, 132),
+	},
+	["Blood"] = {
+		bgTop = Color3.fromRGB(60, 8, 12), bgBottom = Color3.fromRGB(25, 3, 5),
+		panel = Color3.fromRGB(20, 3, 4), card = Color3.fromRGB(52, 7, 10),
+		cardHover = Color3.fromRGB(65, 9, 13), inner = Color3.fromRGB(34, 5, 7),
+		accent = Color3.fromRGB(225, 30, 45), accentDim = Color3.fromRGB(114, 15, 22),
+		off = Color3.fromRGB(91, 70, 76), sub = Color3.fromRGB(235, 211, 217),
+		line = Color3.fromRGB(141, 19, 28),
+	},
+	["Coffee"] = {
+		bgTop = Color3.fromRGB(70, 48, 36), bgBottom = Color3.fromRGB(29, 20, 15),
+		panel = Color3.fromRGB(23, 16, 12), card = Color3.fromRGB(61, 42, 31),
+		cardHover = Color3.fromRGB(76, 52, 39), inner = Color3.fromRGB(40, 27, 21),
+		accent = Color3.fromRGB(225, 170, 120), accentDim = Color3.fromRGB(118, 87, 62),
+		off = Color3.fromRGB(95, 86, 85), sub = Color3.fromRGB(235, 228, 226),
+		line = Color3.fromRGB(147, 108, 78),
+	},
+}
+THEMES["Transparent"] = {
+	bgTop = Color3.fromRGB(175, 175, 180), bgBottom = Color3.fromRGB(125, 125, 130),
+	panel = Color3.fromRGB(95, 95, 100), card = Color3.fromRGB(155, 155, 160),
+	cardHover = Color3.fromRGB(180, 180, 186), inner = Color3.fromRGB(115, 115, 120),
+	accent = Color3.fromRGB(190, 190, 197), accentDim = Color3.fromRGB(120, 120, 126),
+	off = Color3.fromRGB(78, 78, 84), sub = Color3.fromRGB(232, 232, 236),
+	line = Color3.fromRGB(236, 236, 240),
+}
+local THEME_ORDER = { "Transparent", "Burgundy", "Midnight", "Amethyst", "Emerald", "Graphite", "Neon", "Ocean", "Sunset", "Sakura", "Lava", "Ice", "Toxic", "Gold", "Lavender", "Mint", "Blood", "Coffee" }
+local THEME_KEYS = { "bgTop", "bgBottom", "panel", "card", "cardHover", "inner", "accent", "accentDim", "off", "sub", "line" }
+local appliedTheme = "Burgundy"
+local themeCards = {}
+
+local function colorKey(color)
+	return string.format("%d,%d,%d",
+		math.floor(color.R * 255 + 0.5), math.floor(color.G * 255 + 0.5), math.floor(color.B * 255 + 0.5))
+end
+
+local function recolor(root, map)
+	for _, obj in ipairs(root:GetDescendants()) do
+		if obj:IsA("GuiObject") and obj:GetAttribute("KeepColor") then
+			continue
 		end
 		if obj:IsA("GuiObject") then
-			local level = clearLevels[colorKey(obj.BackgroundColor3)]
-			if level and obj.BackgroundTransparency < 1 and obj:GetAttribute("RaMClearBg") == nil then
-				obj:SetAttribute("RaMClearBg", obj.BackgroundTransparency)
-				obj.BackgroundTransparency = math.max(obj.BackgroundTransparency, level)
+			local background = map[colorKey(obj.BackgroundColor3)]
+			if background then
+				obj.BackgroundColor3 = background
 			end
-			if (obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox"))
-				and obj:GetAttribute("RaMClearText") == nil then
-				obj:SetAttribute("RaMClearText", obj.TextStrokeTransparency)
-				obj.TextStrokeTransparency = math.min(obj.TextStrokeTransparency, 0.7)
-			end
-		elseif obj:IsA("UIStroke") and obj:GetAttribute("RaMClearStroke") == nil and obj.Transparency < 1 then
-			obj:SetAttribute("RaMClearStroke", obj.Transparency)
-			obj.Transparency = obj.Transparency * 0.55
-		end
-	end
-	local function restoreObject(obj)
-		local bg = obj:GetAttribute("RaMClearBg")
-		if bg ~= nil then
-			obj.BackgroundTransparency = bg
-			obj:SetAttribute("RaMClearBg", nil)
-		end
-		local text = obj:GetAttribute("RaMClearText")
-		if text ~= nil then
-			obj.TextStrokeTransparency = text
-			obj:SetAttribute("RaMClearText", nil)
-		end
-		local stroke = obj:GetAttribute("RaMClearStroke")
-		if stroke ~= nil then
-			obj.Transparency = stroke
-			obj:SetAttribute("RaMClearStroke", nil)
-		end
-	end
-	local function setClearMode(on)
-		if on then
-			local theme = THEMES[CLEAR_THEME]
-			clearLevels = {
-				[colorKey(theme.bgTop)] = 0.9, [colorKey(theme.bgBottom)] = 0.88,
-				[colorKey(theme.panel)] = 0.9, [colorKey(theme.card)] = 0.86,
-				[colorKey(theme.cardHover)] = 0.82, [colorKey(theme.inner)] = 0.85,
-				[colorKey(theme.off)] = 0.65, [colorKey(theme.accentDim)] = 0.55,
-			}
-			for _, obj in ipairs(screenGui:GetDescendants()) do
-				clearObject(obj)
-			end
-			if not clearConnection then
-				clearConnection = screenGui.DescendantAdded:Connect(function(obj)
-					task.defer(function()
-						if obj.Parent and clearLevels then
-							clearObject(obj)
-						end
-					end)
-				end)
-			end
-		else
-			if clearConnection then
-				clearConnection:Disconnect()
-				clearConnection = nil
-			end
-			if clearLevels then
-				clearLevels = nil
-				for _, obj in ipairs(screenGui:GetDescendants()) do
-					restoreObject(obj)
+			if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+				local textColor = map[colorKey(obj.TextColor3)]
+				if textColor then
+					obj.TextColor3 = textColor
+				end
+				if obj:IsA("TextBox") then
+					local placeholder = map[colorKey(obj.PlaceholderColor3)]
+					if placeholder then
+						obj.PlaceholderColor3 = placeholder
+					end
 				end
 			end
+			if obj:IsA("ScrollingFrame") then
+				local bar = map[colorKey(obj.ScrollBarImageColor3)]
+				if bar then
+					obj.ScrollBarImageColor3 = bar
+				end
+			end
+		elseif obj:IsA("UIStroke") then
+			local strokeColor = map[colorKey(obj.Color)]
+			if strokeColor then
+				obj.Color = strokeColor
+			end
+		elseif obj:IsA("UIGradient") then
+			local changed, keypoints = false, {}
+			for _, keypoint in ipairs(obj.Color.Keypoints) do
+				local mapped = map[colorKey(keypoint.Value)]
+				changed = changed or mapped ~= nil
+				table.insert(keypoints, ColorSequenceKeypoint.new(keypoint.Time, mapped or keypoint.Value))
+			end
+			if changed then
+				obj.Color = ColorSequence.new(keypoints)
+			end
 		end
 	end
-	local function applyTheme(name)
-		local theme = THEMES[name]
-		if not theme then
-			return
+end
+
+local function refreshThemeCards()
+	for name, entry in pairs(themeCards) do
+		local active = name == appliedTheme
+		entry.stroke.Color = active and C.accent or C.line
+		entry.stroke.Transparency = active and 0.2 or 0.65
+		entry.badge.Visible = active
+		entry.badge.TextColor3 = C.accent
+	end
+end
+
+local CLEAR_THEME = "Transparent"
+local clearLevels = nil
+local clearConnection = nil
+
+local function clearObject(obj)
+	if obj:GetAttribute("KeepColor") then
+		return
+	end
+	if obj:IsA("GuiObject") then
+		local level = clearLevels[colorKey(obj.BackgroundColor3)]
+		if level and obj.BackgroundTransparency < 1 and obj:GetAttribute("RaMClearBg") == nil then
+			obj:SetAttribute("RaMClearBg", obj.BackgroundTransparency)
+			obj.BackgroundTransparency = math.max(obj.BackgroundTransparency, level)
 		end
-		if name ~= appliedTheme then
-			local map = {}
-			for _, key in ipairs(THEME_KEYS) do
-				map[colorKey(C[key])] = theme[key]
-			end
-			recolor(screenGui, map)
-			local watermark = playerGui:FindFirstChild("RaMVisuals_Watermark")
-			if watermark then
-				recolor(watermark, map)
-			end
-			for _, key in ipairs(THEME_KEYS) do
-				C[key] = theme[key]
-			end
-			appliedTheme = name
+		if (obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox"))
+			and obj:GetAttribute("RaMClearText") == nil then
+			obj:SetAttribute("RaMClearText", obj.TextStrokeTransparency)
+			obj.TextStrokeTransparency = math.min(obj.TextStrokeTransparency, 0.7)
 		end
-		MENU_STYLE.Theme = name
-		setClearMode(name == CLEAR_THEME)
-		for _, refresh in ipairs(uiRefreshers) do
-			refresh()
+	elseif obj:IsA("UIStroke") and obj:GetAttribute("RaMClearStroke") == nil and obj.Transparency < 1 then
+		obj:SetAttribute("RaMClearStroke", obj.Transparency)
+		obj.Transparency = obj.Transparency * 0.55
+	end
+end
+
+local function restoreObject(obj)
+	local bg = obj:GetAttribute("RaMClearBg")
+	if bg ~= nil then
+		obj.BackgroundTransparency = bg
+		obj:SetAttribute("RaMClearBg", nil)
+	end
+	local text = obj:GetAttribute("RaMClearText")
+	if text ~= nil then
+		obj.TextStrokeTransparency = text
+		obj:SetAttribute("RaMClearText", nil)
+	end
+	local stroke = obj:GetAttribute("RaMClearStroke")
+	if stroke ~= nil then
+		obj.Transparency = stroke
+		obj:SetAttribute("RaMClearStroke", nil)
+	end
+end
+
+local function setClearMode(on)
+	if on then
+		local theme = THEMES[CLEAR_THEME]
+		clearLevels = {
+			[colorKey(theme.bgTop)] = 0.9, [colorKey(theme.bgBottom)] = 0.88,
+			[colorKey(theme.panel)] = 0.9, [colorKey(theme.card)] = 0.86,
+			[colorKey(theme.cardHover)] = 0.82, [colorKey(theme.inner)] = 0.85,
+			[colorKey(theme.off)] = 0.65, [colorKey(theme.accentDim)] = 0.55,
+		}
+		for _, obj in ipairs(screenGui:GetDescendants()) do
+			clearObject(obj)
 		end
-		refreshThemeCards()
-		if currentSection and not currentModule then
-			selectSection(currentSection)
+		if not clearConnection then
+			clearConnection = screenGui.DescendantAdded:Connect(function(obj)
+				task.defer(function()
+					if obj.Parent and clearLevels then
+						clearObject(obj)
+					end
+				end)
+			end)
+		end
+	else
+		if clearConnection then
+			clearConnection:Disconnect()
+			clearConnection = nil
+		end
+		if clearLevels then
+			clearLevels = nil
+			for _, obj in ipairs(screenGui:GetDescendants()) do
+				restoreObject(obj)
+			end
 		end
 	end
+end
+
+local function applyTheme(name)
+	local theme = THEMES[name]
+	if not theme then
+		return
+	end
+	if name ~= appliedTheme then
+		local map = {}
+		for _, key in ipairs(THEME_KEYS) do
+			map[colorKey(C[key])] = theme[key]
+		end
+		recolor(screenGui, map)
+		local watermark = playerGui:FindFirstChild("RaMVisuals_Watermark")
+		if watermark then
+			recolor(watermark, map)
+		end
+		for _, key in ipairs(THEME_KEYS) do
+			C[key] = theme[key]
+		end
+		appliedTheme = name
+	end
+	MENU_STYLE.Theme = name
+	setClearMode(name == CLEAR_THEME)
+	for _, refresh in ipairs(uiRefreshers) do
+		refresh()
+	end
+	refreshThemeCards()
+	if currentSection and not currentModule then
+		selectSection(currentSection)
+	end
+end
+
+do
 	local themesSection = createSection("Themes", "Settings")
 	for index, name in ipairs(THEME_ORDER) do
 		local theme = THEMES[name]
@@ -8560,6 +8570,7 @@ do
 		themeCards[name] = { stroke = stroke, badge = badge }
 		table.insert(themesSection.cards, { frame = card, name = name, desc = "theme" })
 	end
+
 	addModule(themesSection, {
 		name = "Glass",
 		desc = "Translucent menu with blurred world behind it.",
@@ -8604,106 +8615,106 @@ do
 			end
 		end,
 	})
-	do
-		local function applyMenuKey()
-			local key = Enum.KeyCode[MENU_STYLE.MenuKey]
-			if not key or key == Enum.KeyCode.Unknown then
-				key = Enum.KeyCode.RightControl
-				MENU_STYLE.MenuKey = key.Name
-			end
-			CONFIG.MenuKey = key
-			menuHint.Text = key.Name .. " — Menu\nRMB on card — Keybind\nmade by m7zard"
-			return key
+
+	local function applyMenuKey()
+		local key = Enum.KeyCode[MENU_STYLE.MenuKey]
+		if not key or key == Enum.KeyCode.Unknown then
+			key = Enum.KeyCode.RightControl
+			MENU_STYLE.MenuKey = key.Name
 		end
-		local card = new("TextButton", {
-			LayoutOrder = 1000,
-			BackgroundColor3 = C.card,
-			BackgroundTransparency = 0.05,
-			BorderSizePixel = 0,
-			AutoButtonColor = false,
-			Text = "",
-			Parent = themesSection.grid,
-		})
-		round(card, 8)
-		local stroke = outline(card, C.line, 0.65)
-		local icon = new("Frame", {
-			Position = UDim2.fromOffset(10, 8),
-			Size = UDim2.fromOffset(22, 22),
-			BackgroundColor3 = C.accent,
-			BorderSizePixel = 0,
-			Parent = card,
-		})
-		round(icon, 6)
-		drawIcon(icon, "square", 12)(C.text)
-		new("TextLabel", {
-			Position = UDim2.fromOffset(40, 8),
-			Size = UDim2.new(1, -50, 0, 22),
-			BackgroundTransparency = 1,
-			Font = Enum.Font.GothamBold,
-			TextSize = 14,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextColor3 = C.text,
-			Text = "Menu Key",
-			Parent = card,
-		})
-		local desc = new("TextLabel", {
-			Position = UDim2.fromOffset(12, 32),
-			Size = UDim2.new(1, -24, 0, 28),
-			BackgroundTransparency = 1,
-			Font = Enum.Font.Gotham,
-			TextSize = 12,
-			TextWrapped = true,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextYAlignment = Enum.TextYAlignment.Top,
-			TextColor3 = C.sub,
-			Text = "",
-			Parent = card,
-		})
-		local capturing = false
-		local function refresh()
-			local key = applyMenuKey()
-			if not capturing then
-				desc.Text = "Current: " .. key.Name .. ". Click to change."
-				desc.TextColor3 = C.sub
-			end
-		end
-		card.MouseButton1Click:Connect(function()
-			capturing = true
-			desc.Text = "Press a new key... (Esc — cancel)"
-			desc.TextColor3 = C.accent
-			stroke.Color = C.accent
-			stroke.Transparency = 0.3
-		end)
-		UserInputService.InputBegan:Connect(function(input)
-			if not capturing or input.UserInputType ~= Enum.UserInputType.Keyboard then
-				return
-			end
-			capturing = false
-			stroke.Color = C.line
-			stroke.Transparency = 0.65
-			local key = input.KeyCode
-			if key ~= Enum.KeyCode.Escape and key ~= Enum.KeyCode.Unknown then
-				task.defer(function()
-					for name, bound in pairs(KEYBINDS) do
-						if bound == key.Name then
-							KEYBINDS[name] = nil
-						end
-					end
-					MENU_STYLE.MenuKey = key.Name
-					for _, refresher in ipairs(uiRefreshers) do
-						refresher()
-					end
-					playToggleSound(true)
-					showToast("Menu Key: " .. key.Name, true)
-				end)
-			else
-				refresh()
-			end
-		end)
-		refresh()
-		table.insert(uiRefreshers, refresh)
-		table.insert(themesSection.cards, { frame = card, name = "Menu Key", desc = "open close menu" })
+		CONFIG.MenuKey = key
+		menuHint.Text = key.Name .. " — Menu\nRMB on card — Keybind\nmade by m7zard"
+		return key
 	end
+	local card = new("TextButton", {
+		LayoutOrder = 1000,
+		BackgroundColor3 = C.card,
+		BackgroundTransparency = 0.05,
+		BorderSizePixel = 0,
+		AutoButtonColor = false,
+		Text = "",
+		Parent = themesSection.grid,
+	})
+	round(card, 8)
+	local stroke = outline(card, C.line, 0.65)
+	local icon = new("Frame", {
+		Position = UDim2.fromOffset(10, 8),
+		Size = UDim2.fromOffset(22, 22),
+		BackgroundColor3 = C.accent,
+		BorderSizePixel = 0,
+		Parent = card,
+	})
+	round(icon, 6)
+	drawIcon(icon, "square", 12)(C.text)
+	new("TextLabel", {
+		Position = UDim2.fromOffset(40, 8),
+		Size = UDim2.new(1, -50, 0, 22),
+		BackgroundTransparency = 1,
+		Font = Enum.Font.GothamBold,
+		TextSize = 14,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextColor3 = C.text,
+		Text = "Menu Key",
+		Parent = card,
+	})
+	local desc = new("TextLabel", {
+		Position = UDim2.fromOffset(12, 32),
+		Size = UDim2.new(1, -24, 0, 28),
+		BackgroundTransparency = 1,
+		Font = Enum.Font.Gotham,
+		TextSize = 12,
+		TextWrapped = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextYAlignment = Enum.TextYAlignment.Top,
+		TextColor3 = C.sub,
+		Text = "",
+		Parent = card,
+	})
+	local capturing = false
+	local function refresh()
+		local key = applyMenuKey()
+		if not capturing then
+			desc.Text = "Current: " .. key.Name .. ". Click to change."
+			desc.TextColor3 = C.sub
+		end
+	end
+	card.MouseButton1Click:Connect(function()
+		capturing = true
+		desc.Text = "Press a new key... (Esc — cancel)"
+		desc.TextColor3 = C.accent
+		stroke.Color = C.accent
+		stroke.Transparency = 0.3
+	end)
+	UserInputService.InputBegan:Connect(function(input)
+		if not capturing or input.UserInputType ~= Enum.UserInputType.Keyboard then
+			return
+		end
+		capturing = false
+		stroke.Color = C.line
+		stroke.Transparency = 0.65
+		local key = input.KeyCode
+		if key ~= Enum.KeyCode.Escape and key ~= Enum.KeyCode.Unknown then
+			task.defer(function()
+				for name, bound in pairs(KEYBINDS) do
+					if bound == key.Name then
+						KEYBINDS[name] = nil
+					end
+				end
+				MENU_STYLE.MenuKey = key.Name
+				for _, refresher in ipairs(uiRefreshers) do
+					refresher()
+				end
+				playToggleSound(true)
+				showToast("Menu Key: " .. key.Name, true)
+			end)
+		else
+			refresh()
+		end
+	end)
+	refresh()
+	table.insert(uiRefreshers, refresh)
+	table.insert(themesSection.cards, { frame = card, name = "Menu Key", desc = "open close menu" })
+
 	refreshThemeCards()
 	table.insert(uiRefreshers, function()
 		if MENU_STYLE.Theme ~= appliedTheme and THEMES[MENU_STYLE.Theme] then
