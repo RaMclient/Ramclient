@@ -3770,7 +3770,7 @@ new("Frame", {
 	Parent = topBar,
 })
 local logo = new("Frame", {
-	Position = UDim2.fromOffset(14, 11),
+	Position = UDim2.fromOffset(40, 11),
 	Size = UDim2.fromOffset(26, 26),
 	BackgroundColor3 = LOGO_BG,
 	BorderSizePixel = 0,
@@ -3780,7 +3780,7 @@ round(logo, 6)
 outline(logo, C.line, 0.5)
 drawLogoMark(logo, 26)
 local brand = new("Frame", {
-	Position = UDim2.fromOffset(48, 0),
+	Position = UDim2.fromOffset(74, 0),
 	Size = UDim2.fromOffset(144, 48),
 	BackgroundTransparency = 1,
 	Parent = topBar,
@@ -3827,8 +3827,8 @@ new("TextLabel", {
 	Parent = brand,
 })
 local searchBox = new("Frame", {
-	Position = UDim2.fromOffset(198, 9),
-	Size = UDim2.new(1, -198 - 176, 0, 30),
+	Position = UDim2.fromOffset(224, 9),
+	Size = UDim2.new(1, -224 - 176, 0, 30),
 	BackgroundColor3 = C.panel,
 	BackgroundTransparency = 0.3,
 	BorderSizePixel = 0,
@@ -8388,6 +8388,10 @@ do
 			if watermark then
 				recolor(watermark, map)
 			end
+			local miniRoot = playerGui:FindFirstChild("RaMVisuals_Mini")
+			if miniRoot then
+				recolor(miniRoot, map)
+			end
 			for _, key in ipairs(THEME_KEYS) do
 				C[key] = theme[key]
 			end
@@ -9655,6 +9659,192 @@ do
 		end)
 	end
 end
+-- Close (X) button + minimized draggable square
+task.spawn(function()
+	local MINI_SIZE = 48
+	local MINI_MARGIN = 6
+	local DRAG_THRESHOLD = 6
+	local closeButton = new("TextButton", {
+		Name = "CloseButton",
+		Position = UDim2.fromOffset(12, 14),
+		Size = UDim2.fromOffset(20, 20),
+		BackgroundColor3 = C.card,
+		BackgroundTransparency = 0.15,
+		BorderSizePixel = 0,
+		AutoButtonColor = false,
+		Text = "",
+		Parent = topBar,
+	})
+	round(closeButton, 10)
+	local closeStroke = outline(closeButton, C.line, 0.5)
+	local setCloseIcon = drawIcon(closeButton, "x", 12)
+	setCloseIcon(C.sub)
+	closeButton.MouseEnter:Connect(function()
+		TweenService:Create(closeButton, TweenInfo.new(0.12), { BackgroundColor3 = C.accent }):Play()
+		closeStroke.Color = C.accent
+		setCloseIcon(C.text)
+	end)
+	closeButton.MouseLeave:Connect(function()
+		TweenService:Create(closeButton, TweenInfo.new(0.12), { BackgroundColor3 = C.card }):Play()
+		closeStroke.Color = C.line
+		setCloseIcon(C.sub)
+	end)
+	local miniGui = new("ScreenGui", {
+		Name = "RaMVisuals_Mini",
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		ResetOnSpawn = false,
+		DisplayOrder = 120,
+		Enabled = false,
+		Parent = playerGui,
+	})
+	local mini = new("TextButton", {
+		Name = "Minimized",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromOffset(60, 60),
+		Size = UDim2.fromOffset(MINI_SIZE, MINI_SIZE),
+		BackgroundColor3 = LOGO_BG,
+		BorderSizePixel = 0,
+		AutoButtonColor = false,
+		Text = "",
+		Parent = miniGui,
+	})
+	round(mini, 12)
+	local miniStroke = outline(mini, C.accent, 0.4)
+	miniStroke.Thickness = 2
+	local miniScale = new("UIScale", { Scale = 0, Parent = mini })
+	drawLogoMark(mini, MINI_SIZE)
+	mini.MouseEnter:Connect(function()
+		miniStroke.Transparency = 0.05
+	end)
+	mini.MouseLeave:Connect(function()
+		miniStroke.Transparency = 0.4
+	end)
+	local function areaSize()
+		local area = miniGui.AbsoluteSize
+		if area.X < 1 or area.Y < 1 then
+			area = screenGui.AbsoluteSize
+		end
+		return area
+	end
+	local function clampCenter(x, y)
+		local area = areaSize()
+		local pad = MINI_SIZE / 2 + MINI_MARGIN
+		return math.clamp(x, pad, math.max(pad, area.X - pad)),
+			math.clamp(y, pad, math.max(pad, area.Y - pad))
+	end
+	local function closeButtonCenter()
+		local area = areaSize()
+		local scale = windowScale.Scale
+		local pos = frame.Position
+		local centerX = area.X * pos.X.Scale + pos.X.Offset
+		local centerY = area.Y * pos.Y.Scale + pos.Y.Offset
+		local offsetX = closeButton.Position.X.Offset + closeButton.Size.X.Offset / 2 - frame.Size.X.Offset / 2
+		local offsetY = closeButton.Position.Y.Offset + closeButton.Size.Y.Offset / 2 - frame.Size.Y.Offset / 2
+		return centerX + offsetX * scale, centerY + offsetY * scale
+	end
+	local miniToken = 0
+	local miniPlaced = false
+	local function showMini(cx, cy)
+		miniToken += 1
+		if miniPlaced then
+			cx, cy = mini.Position.X.Offset, mini.Position.Y.Offset
+		end
+		cx, cy = clampCenter(cx, cy)
+		mini.Position = UDim2.fromOffset(cx, cy)
+		mini.Rotation = -90
+		miniScale.Scale = 0
+		miniGui.Enabled = true
+		TweenService:Create(miniScale, TweenInfo.new(0.55, Enum.EasingStyle.Back), { Scale = 1 }):Play()
+		TweenService:Create(mini, TweenInfo.new(0.55, Enum.EasingStyle.Back), { Rotation = 0 }):Play()
+	end
+	local function hideMini()
+		if not miniGui.Enabled then
+			return
+		end
+		miniToken += 1
+		local token = miniToken
+		local shrink = TweenService:Create(
+			miniScale,
+			TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In),
+			{ Scale = 0 }
+		)
+		TweenService:Create(
+			mini,
+			TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+			{ Rotation = 90 }
+		):Play()
+		shrink.Completed:Connect(function()
+			if miniToken == token then
+				miniGui.Enabled = false
+			end
+		end)
+		shrink:Play()
+	end
+	local dragInput, dragStart, dragOrigin, dragMoved
+	mini.InputBegan:Connect(function(input)
+		if input.UserInputType ~= Enum.UserInputType.MouseButton1
+			and input.UserInputType ~= Enum.UserInputType.Touch then
+			return
+		end
+		dragInput = input
+		dragStart = input.Position
+		dragOrigin = mini.Position
+		dragMoved = false
+		local connection
+		connection = input.Changed:Connect(function()
+			if input.UserInputState ~= Enum.UserInputState.End then
+				return
+			end
+			connection:Disconnect()
+			if dragInput ~= input then
+				return
+			end
+			dragInput = nil
+			if not dragMoved then
+				openMenu()
+			end
+		end)
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if not dragInput then
+			return
+		end
+		if input.UserInputType ~= Enum.UserInputType.MouseMovement
+			and input.UserInputType ~= Enum.UserInputType.Touch then
+			return
+		end
+		local delta = input.Position - dragStart
+		if not dragMoved and delta.Magnitude < DRAG_THRESHOLD then
+			return
+		end
+		dragMoved = true
+		miniPlaced = true
+		local x, y = clampCenter(dragOrigin.X.Offset + delta.X, dragOrigin.Y.Offset + delta.Y)
+		mini.Position = UDim2.fromOffset(x, y)
+	end)
+	miniGui:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		local x, y = clampCenter(mini.Position.X.Offset, mini.Position.Y.Offset)
+		mini.Position = UDim2.fromOffset(x, y)
+	end)
+	closeButton.MouseButton1Click:Connect(function()
+		if not menuOpen then
+			return
+		end
+		local cx, cy = closeButtonCenter()
+		closeMenu()
+		local id = animationId
+		task.delay(0.4, function()
+			if animationId == id and not menuOpen then
+				showMini(cx, cy)
+			end
+		end)
+	end)
+	local baseOpenMenu = openMenu
+	openMenu = function()
+		hideMini()
+		baseOpenMenu()
+	end
+end)
 local introPlaying = false
 local function tween(object, time, props, style, direction)
 	local t = TweenService:Create(
