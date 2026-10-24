@@ -4,6 +4,7 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local localPlayer = Players.LocalPlayer
 local playerGui = localPlayer:WaitForChild("PlayerGui")
+local activeVisuals
 local RENDERERS = {}
 local realRunService = RunService
 local function syncContext(owner, connections)
@@ -9104,15 +9105,6 @@ do
 			end
 		end
 	end
-	local function activeVisuals()
-		local names = {}
-		for _, item in ipairs({ { HAT, "Hat" }, { BACK, "Back" }, { AURA, "Aura" }, { PET, "Pet" } }) do
-			if item[1].Enabled then
-				table.insert(names, item[2])
-			end
-		end
-		return #names > 0 and table.concat(names, " · ") or "no visuals active"
-	end
 	RunService.RenderStepped:Connect(function(dt)
 		local visible = MENU_STYLE.Preview and screenGui.Enabled and frame.Visible
 		panel.Visible = visible
@@ -9884,3 +9876,12 @@ watermarkClicked.Event:Connect(function()
 end)
 screenGui.Enabled = false
 task.spawn(playIntro)
+function activeVisuals()
+    local names = {}
+    for _, item in ipairs({ { HAT, "Hat" }, { BACK, "Back" }, { AURA, "Aura" }, { PET, "Pet" } }) do
+        if item[1].Enabled then
+            table.insert(names, item[2])
+        end
+    end
+    return #names > 0 and table.concat(names, " · ") or "no visuals active"
+end
